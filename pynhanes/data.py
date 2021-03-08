@@ -66,7 +66,7 @@ def load(datasets, years):
             if url in visited:
                 continue
             try:
-                df = pd.read_sas(url)
+                df = pd.read_sas(url, encoding='windows-1252')
                 _l.info('read {0[0]} rows x {0[1]} cols from {1}'.format(
                     df.shape, url
                 ))
@@ -78,7 +78,7 @@ def load(datasets, years):
                 visited.append(url)
         try:
             res[dataset] = pd.concat(res[dataset], axis=0, join='outer')
-            _l.info('combined dataset {0}: {1[0]} rows x {1[1]} cols'.format(
+            _l.info('combined {0} datasets: {1[0]} rows x {1[1]} cols'.format(
                 dataset, res[dataset].shape
             ))
         except Exception as e:
@@ -96,6 +96,23 @@ def nhanes_url(dataset: str, year: int=2018) -> str:
         _l.error('No NHANES data for this year')
         return ''
 
+
+
+#-----------------------------------------------------------------------------
+# Special Data
+#-----------------------------------------------------------------------------
+
+def load_drugs(url='https://wwwn.cdc.gov/Nchs/Nhanes/1999-2000/RXQ_DRUG.xpt'):
+    df = pd.read_sas(url, encoding='windows-1252')
+    _l.info('read {0[0]} rows x {0[1]} cols from {1}'.format(
+                    df.shape, url
+    ))
+    return df
+
+
+#-----------------------------------------------------------------------------
+# Misc
+#-----------------------------------------------------------------------------
 
 def test():
     print('testing')
